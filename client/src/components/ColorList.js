@@ -22,9 +22,9 @@ const ColorList = ({ colors, updateColors }) => {
     axiosWithAuth()
       .get(`http://www.localhost:4000/api/colors`)
       .then(res => {
-        console.log('updateUI', res)
         updateColors(res.data)
         setEditing(false)
+        console.log('updateUI', res)
       })
       .catch(err => console.error('error in GET COLORS', err))
   }
