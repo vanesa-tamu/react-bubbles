@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import axiosWithAuth from '../utils/AxiosWithAuth.js'
 
 const initialColor = {
   color: "",
@@ -7,7 +8,7 @@ const initialColor = {
 };
 
 const ColorList = ({ colors, updateColors }) => {
-  console.log(colors);
+  console.log('COLORS state', colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
@@ -16,11 +17,31 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
+  const updateUI = () => {
+    axiosWithAuth()
+      .get(`http://www.localhost:4000/api/colors`)
+      .then(res => {
+        console.log('updateUI', res)
+        updateColors(res.data)
+        setEditing(false)
+        setColorToEdit(res.data)
+      })
+      .catch(err => console.error('error in GET COLORS', err))
+  }
+
   const saveEdit = e => {
     e.preventDefault();
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    console.log("colorToEdit State",colorToEdit)
+    axiosWithAuth()
+      .put(`http://www.localhost:4000/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then(res => {
+        console.log('Response from PUT', res) //{ data: {color: '', code: {hex: ''}, id: # }}
+        updateUI()
+      })
+      .catch( err => console.error("error in PUT ColorList", err) )
   };
 
   const deleteColor = color => {
