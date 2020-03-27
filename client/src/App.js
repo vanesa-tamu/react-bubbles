@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./components/Login";
 import "./styles.scss";
 
+import BubblePage from './components/BubblePage.js'
+import PrivateRoute from './components/PrivateRoute.js'
+
 function App() {
   return (
     <Router>
