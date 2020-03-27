@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
  import axios from 'axios' 
 
-const Login = () => {
+const Login = (props) => {
 
   const [login, setLogin] = useState({username: '', password:''})
 
@@ -16,11 +16,11 @@ const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("within handleSubmit", login);
-    axios.post('http://localhost:5000/api/login', login)
+    axios.post('http://localhost:4000/api/login', login)
       .then(response => {
           console.log(response);
           localStorage.setItem('token', response.data.payload)
-          // props.history.push('/protected')
+          props.history.push('/bubblepage')
       })
       .catch(err => console.log("error in POST LOGIN", err.response))
 
