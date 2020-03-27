@@ -11,6 +11,7 @@ const ColorList = ({ colors, updateColors }) => {
   console.log('COLORS state', colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [colorToAdd, setColorToAdd] = useState(initialColor)
 
   const editColor = color => {
     setEditing(true);
@@ -24,7 +25,6 @@ const ColorList = ({ colors, updateColors }) => {
         console.log('updateUI', res)
         updateColors(res.data)
         setEditing(false)
-        setColorToEdit(res.data)
       })
       .catch(err => console.error('error in GET COLORS', err))
   }
@@ -43,6 +43,19 @@ const ColorList = ({ colors, updateColors }) => {
       })
       .catch( err => console.error("error in PUT ColorList", err) )
   };
+
+  const saveColor = e => {
+    e.preventDefault()
+    console.log('colorToAdd state', colorToAdd)
+    axiosWithAuth()
+      .post(`http://www.localhost:4000/api/colors`, colorToAdd)
+      .then(res => {
+        console.log('Res from POST color', res)
+        updateUI()
+        setColorToAdd(initialColor)
+      })
+      .catch( err => console.error("error in POST ColorList", err) )
+  }
 
   const deleteColor = color => {
     // make a delete request to delete this color
@@ -67,7 +80,7 @@ const ColorList = ({ colors, updateColors }) => {
                     deleteColor(color)
                   }
                 }>
-                  x
+                  ❌
               </span>{" "}
               {color.color}
             </span>
@@ -78,6 +91,30 @@ const ColorList = ({ colors, updateColors }) => {
           </li>
         ))}
       </ul>
+       {/* adding colors */}
+      <form onSubmit={saveColor}>
+        <legend>add color</legend>
+        <label>
+          <input
+            placeholder='color name'
+            type='text'
+            name='color'
+            value={colorToAdd.color}
+            onChange={ e => setColorToAdd({...colorToAdd, color: e.target.value}) }
+          />
+        </label>
+
+        <label>
+          <input
+            placeholder='color HEX code'
+            type='text'
+            name='hex'
+            value={colorToAdd.code.hex}
+            onChange={ e => setColorToAdd( {...colorToAdd, code: {hex: e.target.value} } ) }
+          />
+        </label>
+        <button type='submit'>Add Color</button>
+      </form>
       {editing && (
         <form onSubmit={saveEdit}>
           <legend>edit color</legend>
@@ -109,7 +146,6 @@ const ColorList = ({ colors, updateColors }) => {
         </form>
       )}
       <div className="spacer" />
-      {/* stretch - build another form here to add a color */}
     </div>
   );
 };
